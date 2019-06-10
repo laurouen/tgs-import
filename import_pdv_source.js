@@ -1,6 +1,6 @@
 const mongoose = require('mongoose')
 const fs = require('fs')
-const Pdv = require('./src/pdv')
+const Pdv = require('./src/Pdv')
 //const Brand = require('./src/Brand')
 
 
