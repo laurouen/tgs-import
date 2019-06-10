@@ -8,6 +8,8 @@ mongoose.set('useFindAndModify', false)
 
 let index = 0
 let pdvs = []
+let incCreatePdv = 0,
+	incUpdatePdv = 0
 
 mongoose.connect('mongodb://localhost/Essence', {
 	useCreateIndex: false,
@@ -42,6 +44,8 @@ const readSource = function() {
 const readNextPdvs = function() {
 	if (index > pdvs.length) {
 		console.log('nb d enregistrements : ', pdvs.length)
+		console.log('nb de pdv créé : ', incCreatePdv)
+		console.log('nb de pdv mis à jour : ', incUpdatePdv)
 		stop('Fin d import !')
 	}
 	if (pdvs[index]) {
@@ -152,11 +156,12 @@ const updatePdv = function(updPdv) {
 		}
 
 		if (getPdv == null) {
+			incCreatePdv++
 			//create Pdv without brand
 			getPdv = new Pdv({
 				id: id,
-				latitude: latitude,
-				longitude: longitude,
+				latitude: parseCoordinate(latitude),
+				longitude: parseCoordinate(longitude),
 				adresse: adresse,
 				cp: cp,
 				ville: ville,
@@ -167,8 +172,9 @@ const updatePdv = function(updPdv) {
 				services: services
 			})
 		} else {
-			getPdv.latitude = latitude
-			getPdv.longitude = longitude
+			incUpdatePdv++
+			getPdv.latitude = parseCoordinate(latitude)
+			getPdv.longitude = parseCoordinate(longitude)
 			getPdv.adresse = adresse
 			getPdv.cp = cp
 			getPdv.ville = ville
@@ -186,6 +192,10 @@ const updatePdv = function(updPdv) {
 			})
 			.catch(e => console.error('Error when updating Pdv : %s ', id, e))
 	})
+}
+
+const parseCoordinate = function(coordinate) {
+	return parseFloat(coordinate, 12) / 100000
 }
 
 const stop = function(where = 'not determined') {

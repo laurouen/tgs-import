@@ -3,14 +3,13 @@ const fs = require('fs')
 const Pdv = require('./src/Pdv')
 //const Brand = require('./src/Brand')
 
-
 let index = 0
 let pdvs = []
 let brandCache = {}
+let create = 0
 
 mongoose.Promise = global.Promise
 mongoose.set('useFindAndModify', false)
-
 
 mongoose.connect('mongodb://localhost/Essence', {
 	useCreateIndex: false,
@@ -44,6 +43,7 @@ const readSource = function() {
 const readNextPdvs = function() {
 	if (index > pdvs.length) {
 		console.log('nb d enregistrements : ', pdvs.length)
+		console.log('nb de nouveaux PDVs : ', create)
 		stop('Fin d import !')
 	}
 	if (pdvs[index] && pdvs[index].fields) {
@@ -137,6 +137,7 @@ const createPdv = function(id, name, brand) {
 		.save()
 		.then(() => {
 			//ok
+			create++
 			readNextPdvs()
 		})
 		.catch(e => console.error('Erreur sauvegarde Pdv : ', e))

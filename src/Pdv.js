@@ -17,12 +17,12 @@ const pdvSchema = new Schema({
 		type: String
 	},
 	latitude: {
-		type: String,
-		default: '0'
+		type: Number,
+		default: 0
 	},
 	longitude: {
-		type: String,
-		default: '0'
+		type: Number,
+		default: 0
 	},
 	adresse: {
 		type: String
