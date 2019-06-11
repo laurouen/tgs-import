@@ -24,6 +24,7 @@ const pdvSchema = new Schema({
 		type: Number,
 		default: 0
 	},
+	loc: [Number],
 	adresse: {
 		type: String
 	},
@@ -85,6 +86,8 @@ const pdvSchema = new Schema({
 		}
 	]
 })
+
+pdvSchema.index({ loc: '2d' });
 
 const Pdv = mongoose.model('pdv', pdvSchema)
 

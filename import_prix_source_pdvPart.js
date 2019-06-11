@@ -9,10 +9,11 @@ mongoose.set('useFindAndModify', false)
 let index = 0
 let pdvs = []
 let incCreatePdv = 0,
-	incUpdatePdv = 0
+	incUpdatePdv = 0,
+	incUpdateLocOnly = 0
 
 mongoose.connect('mongodb://localhost/Essence', {
-	useCreateIndex: false,
+	useCreateIndex: true,
 	useNewUrlParser: true
 })
 
@@ -27,7 +28,10 @@ mongoose.connection
 	.on('error', error => console.log('Erreur de connexion : ', error))
 
 const readSource = function() {
-	//fs.readFile('archives/prix_source20190602.json', 'utf-8', (err, pdvsFromFile) => {
+	/*fs.readFile(
+		'archives/prix_source20190602.json',
+		'utf-8',
+		(err, pdvsFromFile) => {*/
 	fs.readFile('prix_source20190606.json', 'utf-8', (err, pdvsFromFile) => {
 		if (err) {
 			console.log('Erreur lecture fichier : ', err)
@@ -46,6 +50,7 @@ const readNextPdvs = function() {
 		console.log('nb d enregistrements : ', pdvs.length)
 		console.log('nb de pdv créé : ', incCreatePdv)
 		console.log('nb de pdv mis à jour : ', incUpdatePdv)
+		console.log('nb loc update only : ', incUpdateLocOnly)
 		stop('Fin d import !')
 	}
 	if (pdvs[index]) {
@@ -139,6 +144,11 @@ const updatePdv = function(updPdv) {
 			})
 		}
 	}
+	//if no horaires were setted, consider to be active
+	if (schedule.length == 0 && latitude != 0) {
+		automate2424 = true
+		inactive = false
+	}
 
 	console.log(
 		'update pdv => [%s] {%s} %s  [%s](%s)',
@@ -162,6 +172,7 @@ const updatePdv = function(updPdv) {
 				id: id,
 				latitude: parseCoordinate(latitude),
 				longitude: parseCoordinate(longitude),
+				loc: [parseCoordinate(longitude), parseCoordinate(latitude)],
 				adresse: adresse,
 				cp: cp,
 				ville: ville,
@@ -173,8 +184,12 @@ const updatePdv = function(updPdv) {
 			})
 		} else {
 			incUpdatePdv++
-			getPdv.latitude = parseCoordinate(latitude)
-			getPdv.longitude = parseCoordinate(longitude)
+			if (getPdv.latitude == 0) {
+				incUpdateLocOnly++
+				getPdv.latitude = parseCoordinate(latitude)
+				getPdv.longitude = parseCoordinate(longitude)
+				getPdv.loc = [parseCoordinate(longitude), parseCoordinate(latitude)]
+			}
 			getPdv.adresse = adresse
 			getPdv.cp = cp
 			getPdv.ville = ville

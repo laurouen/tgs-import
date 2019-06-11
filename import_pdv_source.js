@@ -10,9 +10,10 @@ let create = 0
 
 mongoose.Promise = global.Promise
 mongoose.set('useFindAndModify', false)
+mongoose.set('useCreateIndex', true)
 
 mongoose.connect('mongodb://localhost/Essence', {
-	useCreateIndex: false,
+	useCreateIndex: true,
 	useNewUrlParser: true
 })
 
@@ -47,9 +48,28 @@ const readNextPdvs = function() {
 		stop('Fin d import !')
 	}
 	if (pdvs[index] && pdvs[index].fields) {
-		const { id, brand, name } = pdvs[index++].fields
+		const { id, brand, name, geo_point } = pdvs[index].fields
+		let lat = 0,
+			long = 0
+		if (pdvs[index].geometry) {
+			const { coordinates } = pdvs[index].geometry
+			if (coordinates instanceof Array && coordinates.length == 2) {
+				lat = coordinates[1]
+				long = coordinates[0]
+			}
+		} else {
+			if (
+				geo_point != undefined &&
+				geo_point instanceof Array &&
+				geo_point.length == 2
+			) {
+				lat = geo_point[0]
+				long = geo_point[1]
+			}
+		}
+		index++
 		//findBrand(brand, id, name)
-		findPdv(id, name, brand)
+		findPdv(id, name, brand, lat, long)
 	} else {
 		index++
 		readNextPdvs()
@@ -107,7 +127,7 @@ const createBrand = function(brandName, pdvId, pdvName) {
 		})
 }
 
-const findPdv = function(pdvId, pdvName, brand) {
+const findPdv = function(pdvId, pdvName, brand, lat, long) {
 	Pdv.findOne({ id: pdvId }, function(err, getPdv) {
 		if (err) {
 			console.error('Erreur lors de la recherche de pdv  : ', pdvid, err)
@@ -115,7 +135,7 @@ const findPdv = function(pdvId, pdvName, brand) {
 		}
 		if (getPdv == null) {
 			//create pdv
-			createPdv(pdvId, pdvName, brand)
+			createPdv(pdvId, pdvName, brand, lat, long)
 		} else {
 			//loop
 			console.log('%s => next', pdvId)
@@ -124,13 +144,16 @@ const findPdv = function(pdvId, pdvName, brand) {
 	})
 }
 
-const createPdv = function(id, name, brand) {
+const createPdv = function(id, name, brand, lat, long) {
 	name = name ? name : 'notDefined'
 	brand = brand ? brand : 'notDefined' //tobe removed when adding brand document
 	let newPdv = new Pdv({
 		id: id,
 		name: name,
-		brand: brand
+		brand: brand,
+		latitude: parseFloat(lat, 12),
+		longitude: parseFloat(long, 12),
+		loc: [parseFloat(long, 12), parseFloat(lat, 12)]
 	})
 	console.log('new pdv => {%s} %s  (%s)', id, name, brand)
 	newPdv

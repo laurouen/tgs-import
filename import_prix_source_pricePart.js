@@ -12,9 +12,11 @@ let pdvs = []
 let currentPdv = null
 let prices = []
 let essences = []
+let incCreatePrice = 0
+let incUpdatePrice = 0
 
 mongoose.connect('mongodb://localhost/Essence', {
-	useCreateIndex: false,
+	useCreateIndex: true,
 	useNewUrlParser: true
 })
 
@@ -29,7 +31,10 @@ mongoose.connection
 	.on('error', error => console.log('Erreur de connexion : ', error))
 
 const readSource = function() {
-	//fs.readFile('archives/prix_source20190602.json', 'utf-8', (err, pdvsFromFile) => {
+	/*fs.readFile(
+		'archives/prix_source20190602.json',
+		'utf-8',
+		(err, pdvsFromFile) => {*/
 	fs.readFile('prix_source20190606.json', 'utf-8', (err, pdvsFromFile) => {
 		if (err) {
 			console.log('Erreur lecture fichier : ', err)
@@ -46,6 +51,8 @@ const readSource = function() {
 const readNextPdvs = function() {
 	if (indexPdv > pdvs.length) {
 		console.log('nb d enregistrements : ', pdvs.length)
+		console.log('nb prix créés : ', incCreatePrice)
+		console.log('nb prix updaté : ', incUpdatePrice)
 		stop('Fin d import !')
 	}
 	if (pdvs[indexPdv]) {
@@ -111,9 +118,11 @@ const findPrice = function(price) {
 		}
 		if (getPrice == null) {
 			//create Price
+			incCreatePrice++
 			createPrice(id, valeur, nom, maj)
 		} else {
 			//update price
+			incUpdatePrice++
 			let needToAdd = true
 			for (let index = 0; index < getPrice.prices.length; index++) {
 				const p = getPrice.prices[index]
