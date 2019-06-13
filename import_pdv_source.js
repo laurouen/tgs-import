@@ -1,7 +1,8 @@
 const mongoose = require('mongoose')
 const fs = require('fs')
 const Pdv = require('./src/Pdv')
-//const Brand = require('./src/Brand')
+const source = 'archives/pdv_source20190602.json'
+//const source = 'archives/pdv_source20190608.json'
 
 let index = 0
 let pdvs = []
@@ -28,8 +29,7 @@ mongoose.connection
 	.on('error', error => console.log('Erreur de connexion : ', error))
 
 const readSource = function() {
-	//fs.readFile('archives/pdv_source20190602.json', 'utf-8', (err, pdvsFromFile) => {
-	fs.readFile('pdv_source20190608.json', 'utf-8', (err, pdvsFromFile) => {
+	fs.readFile(source, 'utf-8', (err, pdvsFromFile) => {
 		if (err) {
 			console.log('Erreur lecture fichier : ', err)
 			stop()

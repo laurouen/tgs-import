@@ -1,7 +1,9 @@
 const mongoose = require('mongoose')
 const fs = require('fs')
 const Pdv = require('./src/Pdv')
-//const Service = require('./src/service')
+//const source = 'archives/prix_source20190602.json'
+//const source = 'archives/prix_source20190606.json'
+const source = 'archives/prix_source20190613.json'
 
 mongoose.Promise = global.Promise
 mongoose.set('useFindAndModify', false)
@@ -28,11 +30,7 @@ mongoose.connection
 	.on('error', error => console.log('Erreur de connexion : ', error))
 
 const readSource = function() {
-	/*fs.readFile(
-		'archives/prix_source20190602.json',
-		'utf-8',
-		(err, pdvsFromFile) => {*/
-	fs.readFile('prix_source20190606.json', 'utf-8', (err, pdvsFromFile) => {
+	fs.readFile(source, 'utf-8', (err, pdvsFromFile) => {
 		if (err) {
 			console.log('Erreur lecture fichier : ', err)
 			stop()
@@ -112,6 +110,7 @@ const updatePdv = function(updPdv) {
 		automate2424 = horaires['automate-24-24'] == '1' ? true : false
 		const horairesJours = horaires.jour
 
+		let flagFillTimesOneTime = false
 		for (let jourIndex = 0; jourIndex < 7; jourIndex++) {
 			const jour = horairesJours[jourIndex]
 			inactive = inactive && jour.ferme === '1'
@@ -126,12 +125,16 @@ const updatePdv = function(updPdv) {
 					horairesIndex++
 				) {
 					const h = horaire[horairesIndex]
-					times.push({
-						opening: h.ouverture,
-						closing: h.fermeture
-					})
+					if (h && h.ouverture) {
+						flagFillTimesOneTime = true
+						times.push({
+							opening: h.ouverture,
+							closing: h.fermeture
+						})
+					}
 				}
-			} else if (horaire instanceof Object) {
+			} else if (horaire instanceof Object && horaire.ouverture) {
+				flagFillTimesOneTime = true
 				times.push({
 					opening: horaire.ouverture,
 					closing: horaire.fermeture
@@ -142,6 +145,9 @@ const updatePdv = function(updPdv) {
 				active: jour.ferme === '',
 				times: times
 			})
+		}
+		if (!flagFillTimesOneTime) {
+			automate2424 = true
 		}
 	}
 	//if no horaires were setted, consider to be active

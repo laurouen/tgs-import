@@ -2,6 +2,9 @@ const mongoose = require('mongoose')
 const fs = require('fs')
 const Price = require('./src/Price')
 const Pdv = require('./src/Pdv')
+const source = 'archives/prix_source20190602.json'
+//const source = 'archives/prix_source20190606.json'
+//const source = 'archives/prix_source20190613.json'
 
 mongoose.Promise = global.Promise
 mongoose.set('useFindAndModify', false)
@@ -31,11 +34,7 @@ mongoose.connection
 	.on('error', error => console.log('Erreur de connexion : ', error))
 
 const readSource = function() {
-	/*fs.readFile(
-		'archives/prix_source20190602.json',
-		'utf-8',
-		(err, pdvsFromFile) => {*/
-	fs.readFile('prix_source20190606.json', 'utf-8', (err, pdvsFromFile) => {
+	fs.readFile(source, 'utf-8', (err, pdvsFromFile) => {
 		if (err) {
 			console.log('Erreur lecture fichier : ', err)
 			stop()

@@ -27,10 +27,22 @@ const priceSchema = new Schema({
 	]
 })
 
-priceSchema.virtual('currentPrice').get(() => {
-	return this.prices.reduce((prev, curr) => {
+priceSchema.virtual('price.current').get(function() {
+	const price = this.prices.reduce((prev, curr) => {
 		return prev.date > curr.date ? prev : curr
-	}).value
+	})
+	return price.value
+})
+priceSchema.virtual('price.variation').get(function() {
+	let variation = 0
+	//sort prices
+	if (this.prices.length > 1) {
+		const prices = this.prices.sort((a, b) => {
+			return a.date < b.date
+		})
+		variation = prices[0].value - prices[1].value
+	}
+	return variation
 })
 
 const Price = mongoose.model('price', priceSchema)
