@@ -16,7 +16,7 @@ const logimportSchema = new Schema({
         default: ''
     },
     resultImportPrix: {
-        type: String
+        type: String,
         default: ''
     }
 })
