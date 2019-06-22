@@ -82,8 +82,9 @@ const startImport = function () {
                                                 getLog
                                                     .save()
                                                     .then(() => {
+                                                        console.log("start import price...")
                                                         startImportPrixPrice((resultToLog) => {
-                                                            console.log("log import prix")
+                                                            console.log("log import price done !")
                                                             getLog.resultImportPrix = resultToLog
                                                             getLog.dateImportPrix2Bdd = new Date()
                                                                 .save()
