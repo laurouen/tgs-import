@@ -3,7 +3,7 @@ const unzip = require('unzipper')
 const parser = require('xml2json')
 const fs = require('fs')
 const mongoose = require('mongoose')
-const LogImport = require('src/LogImport')
+const LogImport = require('./src/LogImport')
 
 const fileName = 'PrixCarburants_instantane'
 const zipExtension = '.zip'
