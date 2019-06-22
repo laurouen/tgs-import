@@ -12,7 +12,7 @@ const logimportSchema = new Schema({
         default: null
     },
     resultImportPdv: {
-        type: String
+        type: String,
         default: ''
     },
     resultImportPrix: {
