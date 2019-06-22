@@ -2,8 +2,8 @@ const mongoose = require('mongoose')
 const fs = require('fs')
 const Price = require('./src/Price')
 const Pdv = require('./src/Pdv')
-const source = 'archives/prix_source20190602.json'
-//const source = 'archives/prix_source20190606.json'
+//const source = 'archives/prix_source20190602.json'
+const source = 'archives/prix_source20190606.json'
 //const source = 'archives/prix_source20190613.json'
 
 mongoose.Promise = global.Promise
