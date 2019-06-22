@@ -224,7 +224,7 @@ const updatePdv = function(updPdv) {
 			.catch(e => {
 				callback('Error when updating Pdv : %s ', id, e)
 				stop()
-			)
+			})
 	})
 }
 
