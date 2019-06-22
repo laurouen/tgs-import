@@ -7,7 +7,11 @@ const logimportSchema = new Schema({
         type: Date,
         default: Date.now
     },
-	dateImport2Bdd: {
+	dateImportPdvs2Bdd: {
+        type: Date,
+        default: null
+    },
+	dateImportPrix2Bdd: {
         type: Date,
         default: null
     },

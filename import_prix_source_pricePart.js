@@ -18,6 +18,7 @@ let essences = []
 let incCreatePrice = 0
 let incUpdatePrice = 0
 
+/*
 mongoose.connect('mongodb://localhost/Essence', {
 	useCreateIndex: true,
 	useNewUrlParser: true
@@ -32,11 +33,19 @@ mongoose.connection
 		readSource()
 	})
 	.on('error', error => console.log('Erreur de connexion : ', error))
+*/
+
+var callback = console.log
+
+const startImportPrixPrix = function (_callback) {
+	callback = _callback
+	readSource()
+}
 
 const readSource = function() {
 	fs.readFile(source, 'utf-8', (err, pdvsFromFile) => {
 		if (err) {
-			console.log('Erreur lecture fichier : ', err)
+			callback('Erreur lecture fichier : ', err)
 			stop()
 		}
 		pdvs = JSON.parse(pdvsFromFile)
@@ -49,9 +58,10 @@ const readSource = function() {
 
 const readNextPdvs = function() {
 	if (indexPdv > pdvs.length) {
-		console.log('nb d enregistrements : ', pdvs.length)
-		console.log('nb prix créés : ', incCreatePrice)
-		console.log('nb prix updaté : ', incUpdatePrice)
+		var rapport = 'nb d enregistrements : ' + pdvs.length
+		rapport += ' ; nb prix créés : ' + incCreatePrice
+		rapport += ' ; nb prix updaté : ' + incUpdatePrice
+		callback(rapport)
 		stop('Fin d import !')
 	}
 	if (pdvs[indexPdv]) {
@@ -59,7 +69,7 @@ const readNextPdvs = function() {
 		currentPdv = pdvs[indexPdv++]
 		Pdv.findOne({ id: currentPdv.id }, function(err, getPdv) {
 			if (err) {
-				console.error(
+				callback(
 					'Erreur lors de la recherche de Pdv  : pdvId: %s ',
 					currentPdv.id
 				)
@@ -108,7 +118,7 @@ const findPrice = function(price) {
 	let { id, valeur, nom, maj } = price
 	Price.findOne({ pdv: currentPdv.id, id: id }, function(err, getPrice) {
 		if (err) {
-			console.error(
+			callback(
 				'Erreur lors de la recherche de Prix  : idPrix:%s  pdvId:%s',
 				id,
 				currentPdv.id
@@ -153,7 +163,7 @@ const findPrice = function(price) {
 				getPrice
 					.save()
 					.then(() => readNextPrice())
-					.catch(e => console.error('Update failed : ', e))
+					.catch(e => callback('Update failed : ', e))
 			} else {
 				readNextPrice()
 			}
@@ -196,7 +206,7 @@ const createPrice = function(id, value, name, datetime) {
 		.then(() => {
 			readNextPrice()
 		})
-		.catch(e => console.error('Erreur sur la creation de prix : ', e))
+		.catch(e => callback('Erreur sur la creation de prix : ', e))
 }
 
 const stop = function(where = 'not determined') {
@@ -204,16 +214,6 @@ const stop = function(where = 'not determined') {
 	process.exit(0)
 }
 
-//Promise.all([User.save(), blabla.save()]).then(() => {
 
-//User.findOne({name: 'balbal'}).populate('brand').then ((user) => {})
 
-/*User.findOne({ name: 'balbal' })
-	.populate({
-		path: 'horaires',
-		populate: {
-			path: 'times',
-			model: 'time'
-		}
-	})
-	.then(user => {})*/
+module.exports = startImportPrixPrix

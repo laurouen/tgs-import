@@ -48,7 +48,8 @@ const readSource = function() {
 	})
 }
 
-const startImportPrixPdvs = function (callback) {
+const startImportPrixPdvs = function (_callback) {
+	callback = _callback
 	readSource()
 }
 
