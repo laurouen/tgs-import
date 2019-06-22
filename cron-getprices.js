@@ -17,13 +17,13 @@ var child = exec(
             console.log('exec error: ' + error);
         }
         else {
-            console.log('curl ok -> unzip ', stdout)
+            console.log('curl ok -> unzip ', stdout, stderr)
             unzip.Open.file(path + fileName + zipExtension)
             .then(d => {
-                d.extract({path: path + fileName + xmlExtension})
+                d.extract({path: path})
                 .then(() => {
                     console.log("unzip ok => xml2json")
-                    fs.readFile(path + fileName + xmlExtension, 'latin1', (err, data) => {
+                    fs.readFile(path + fileName + xmlExtension, 'utf8', (err, data) => {
                         if (err || data == undefined) {
                             console.log('error reading file :', err)
                         }
