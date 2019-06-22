@@ -46,7 +46,7 @@ const readSource = function() {
 }
 
 const startImportPrixPdvs = function () {
-	readNextPdvs()
+	readSource()
 }
 
 const readNextPdvs = function() {
