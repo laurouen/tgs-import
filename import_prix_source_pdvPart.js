@@ -1,7 +1,8 @@
+const pathBase = '/home/tgs/import/'
 const mongoose = require('mongoose')
 const fs = require('fs')
-const Pdv = require('./src/Pdv')
-const source = 'cron_archives/prix_source.json'
+const Pdv = require(pathBase + 'src/Pdv')
+const source = pathBase + 'cron_archives/prix_source.json'
 //const source = 'archives/prix_source20190606.json'
 //const source = 'archives/prix_source20190613.json'
 
@@ -37,6 +38,7 @@ var callback = console.log
 const readSource = function() {
 	fs.readFile(source, 'utf-8', (err, pdvsFromFile) => {
 		if (err) {
+			console.error(err, source)
 			callback('Erreur lecture fichier : ', err)
 			stop()
 		}
@@ -233,7 +235,7 @@ const parseCoordinate = function(coordinate) {
 }
 
 const stop = function(where = 'not determined') {
-	console.log('STOP PROGRAMME ! (%s)', where)
+	console.log('STOP PROGRAMME (PDV) ! (%s)', where)
 	process.exit(0)
 }
 
