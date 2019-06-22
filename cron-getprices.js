@@ -1,9 +1,11 @@
 const exec = require('child_process').exec;
 const unzip = require('unzipper')
+const parser = require('xml2json')
+const fs = require('fs')
 
 const fileName = 'PrixCarburants_instantane'
 const zipExtension = '.zip'
-const path = '/home/tgs/import/cron_archives/' + fileName + zipExtension
+const path = '/home/tgs/import/cron_archives/'
 const xmlExtension = '.xml'
 const url = 'https://donnees.roulez-eco.fr/opendata/instantane'
 
@@ -15,11 +17,24 @@ var child = exec(
             console.log('exec error: ' + error);
         }
         else {
-            console.log('ok -> unzip')
+            console.log('curl ok -> unzip ', stdout)
             unzip.Open.file(path + fileName + zipExtension)
             .then(d => {
                 d.extract({path: path + fileName + xmlExtension})
-                .then(r => console.log("ok ", r))
+                .then(() => {
+                    console.log("unzip ok => xml2json")
+                    fs.readFile(fileName + xmlExtension, 'latin1', (err, data) => {
+                        if (err || data == undefined) {
+                            console.log('error reading file :', err)
+                        }
+                    
+                        var json = parser.toJson(data)
+                        fs.writeFile('prix_source.json', json, err => {
+                            console.log('xml2json ok => log import into database')
+                        })
+                    })
+                    
+                })
             })
         }
     }
