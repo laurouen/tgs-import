@@ -3,8 +3,14 @@ const Schema = mongoose.Schema
 
 const logimportSchema = new Schema({
     name: String,
-    dateZipCurled: Date,
-	dateImport2Bdd: Date,
+    dateZipCurled: {
+        type: Date,
+        default: Date.now
+    },
+	dateImport2Bdd: {
+        type: Date,
+        default: null
+    }
 })
 
 const Logimport = mongoose.model('logimport', logimportSchema)

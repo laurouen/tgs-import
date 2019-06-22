@@ -44,9 +44,7 @@ var child = exec(
                         fs.writeFile(path + 'prix_source.json', json, err => {
                             console.log('xml2json ok => log import into database')
                             let newLog = new LogImport({
-                                name: "Prices",
-                                dateZipCurled: new Date(),
-                                dateImport2Bdd: nil
+                                name: "Prices"
                             })
                             newLog
                                 .save()
