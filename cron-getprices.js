@@ -58,27 +58,39 @@ const startImport = function () {
                             var json = parser.toJson(data)
                             fs.writeFile(path + 'prix_source.json', json, err => {
                                 console.log('xml2json ok => log import into database')
+                                const now = new Date()
                                 let newLog = new Logimport({
-                                    name: "Prices"
+                                    name: "Prices",
+                                    dateZipCurled: now
                                 })
                                 newLog
                                     .save()
                                     .then(() => {
                                         console.log('log Import ok => importPdvSource')
                                         startImportPrixPdvs((resultToLog) => {
-                                            newLog.resultImportPdv = resultToLog
-                                            newLog.dateImportPdvs2Bdd = new Date()
-                                            newLog
-                                                .save()
-                                                .then(() => {
-                                                    console.log("importPrixSource => Fin d'import")
-                                                    startImportPrixPrice((resultToLog) => {
-                                                        newLog.resultImportPrix = resultToLog
-                                                        newLog.dateImportPrix2Bdd = new Date()
-                                                        stop('Happy end')
+
+
+
+                                            Logimport.findOne({ dateZipCurled: now }, (err, getLog) => {
+                                                if (err || getLog == null) {
+                                                    console.error('Erreur impossible to find log with dateZipCurled : ', now)
+                                                    stop('Erreur find log: id = %s', id)
+                                                }
+
+                                                getLog.resultImportPdv = resultToLog
+                                                getLog.dateImportPdvs2Bdd = new Date()
+                                                getLog
+                                                    .save()
+                                                    .then(() => {
+                                                        console.log("importPrixSource => Fin d'import")
+                                                        startImportPrixPrice((resultToLog) => {
+                                                            newLog.resultImportPrix = resultToLog
+                                                            newLog.dateImportPrix2Bdd = new Date()
+                                                            stop('Happy end')
+                                                        })
                                                     })
-                                                })
-                                                .catch(e => console.error('Error save LogImport : ', e))
+                                                    .catch(e => console.error('Error save LogImport : ', e))
+                                            })
                                         })
                                     })
                                     .catch(e => console.error('Error save LogImport : ', e))
