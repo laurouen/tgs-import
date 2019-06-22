@@ -19,6 +19,9 @@ mongoose.connect('mongodb://localhost/Essence', {
 	useNewUrlParser: true
 })
 
+
+var callback = console.log
+
 /*
 	mongoose.connection
 		.once('open', () => {
@@ -34,7 +37,7 @@ mongoose.connect('mongodb://localhost/Essence', {
 const readSource = function() {
 	fs.readFile(source, 'utf-8', (err, pdvsFromFile) => {
 		if (err) {
-			console.log('Erreur lecture fichier : ', err)
+			callback('Erreur lecture fichier : ', err)
 			stop()
 		}
 		pdvs = JSON.parse(pdvsFromFile)
@@ -45,16 +48,17 @@ const readSource = function() {
 	})
 }
 
-const startImportPrixPdvs = function () {
+const startImportPrixPdvs = function (callback) {
 	readSource()
 }
 
 const readNextPdvs = function() {
 	if (index > pdvs.length) {
-		console.log('nb d enregistrements : ', pdvs.length)
-		console.log('nb de pdv créé : ', incCreatePdv)
-		console.log('nb de pdv mis à jour : ', incUpdatePdv)
-		console.log('nb loc update only : ', incUpdateLocOnly)
+		var rapport = 'nb d enregistrements : ' + pdvs.length
+		rapport += ' ; nb de pdv créé : ' + incCreatePdv
+		rapport += ' ; nb de pdv mis à jour : ' + incUpdatePdv
+		rapport += ' ; nb loc update only : ' + incUpdateLocOnly
+		callback(rapport)
 		stop('Fin d import !')
 	}
 	if (pdvs[index]) {
@@ -173,7 +177,7 @@ const updatePdv = function(updPdv) {
 
 	Pdv.findOne({ id: id }, (err, getPdv) => {
 		if (err) {
-			console.error('Erreur updating Pdv : ', err)
+			callback('Erreur updating Pdv : ', err)
 			stop('Erreur update: id = %s', id)
 		}
 
@@ -217,7 +221,7 @@ const updatePdv = function(updPdv) {
 			.then(() => {
 				readNextPdvs()
 			})
-			.catch(e => console.error('Error when updating Pdv : %s ', id, e))
+			.catch(e => callback('Error when updating Pdv : %s ', id, e))
 	})
 }
 

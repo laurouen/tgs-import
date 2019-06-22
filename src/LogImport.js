@@ -10,6 +10,14 @@ const logimportSchema = new Schema({
 	dateImport2Bdd: {
         type: Date,
         default: null
+    },
+    resultImportPdv: {
+        type: String
+        default: ''
+    },
+    resultImportPrix: {
+        type: String
+        default: ''
     }
 })
 

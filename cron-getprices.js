@@ -64,7 +64,19 @@ const startImport = function () {
                                     .save()
                                     .then(() => {
                                         console.log('log Import ok => importPdvSource')
-                                        startImportPrixPdvs()
+                                        startImportPrixPdvs((resultToLog) => {
+                                            newLog.resultImportPdv = resultToLog
+                                            newLog
+                                                .save()
+                                                .then(() => {
+                                                    console.log('log Import ok => importPdvSource')
+                                                    startImportPrixPdvs((resultToLog) => {
+                                                        newLog.resultImportPdv = resultToLog
+                                                        
+                                                    })
+                                                })
+                                                .catch(e => console.error('Error save LogImport : ', e))
+                                        })
                                     })
                                     .catch(e => console.error('Error save LogImport : ', e))
                             })
