@@ -37,7 +37,7 @@ mongoose.connection
 
 var callback = console.log
 
-const startImportPrixPrix = function (_callback) {
+const startImportPrixPrice = function (_callback) {
 	callback = _callback
 	readSource()
 }
@@ -216,4 +216,4 @@ const stop = function(where = 'not determined') {
 
 
 
-module.exports = startImportPrixPrix
+module.exports = startImportPrixPrice

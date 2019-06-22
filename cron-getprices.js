@@ -5,7 +5,7 @@ const fs = require('fs')
 const mongoose = require('mongoose')
 const Logimport = require('./src/LogImport')
 const startImportPrixPdvs = require('./import_prix_source_pdvPart')
-const startImportPrixPrix = require('./import_prix_source_prixPart')
+const startImportPrixPrice = require('./import_prix_source_pricePart')
 
 const fileName = 'PrixCarburants_instantane'
 const zipExtension = '.zip'
@@ -72,7 +72,7 @@ const startImport = function () {
                                                 .save()
                                                 .then(() => {
                                                     console.log("importPrixSource => Fin d'import")
-                                                    startImportPrixPrix((resultToLog) => {
+                                                    startImportPrixPrice((resultToLog) => {
                                                         newLog.resultImportPrix = resultToLog
                                                         newLog.dateImportPrix2Bdd = new Date()
                                                         stop('Happy end')
