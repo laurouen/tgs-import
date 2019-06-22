@@ -1,11 +1,12 @@
+const pathBase = '/home/tgs/import/'
 const exec = require('child_process').exec;
 const unzip = require('unzipper')
 const parser = require('xml2json')
 const fs = require('fs')
 const mongoose = require('mongoose')
-const Logimport = require('./src/LogImport')
-const startImportPrixPdvs = require('./import_prix_source_pdvPart')
-const startImportPrixPrice = require('./import_prix_source_pricePart')
+const Logimport = require(pathBase + 'src/LogImport')
+const startImportPrixPdvs = require(pathBase + 'import_prix_source_pdvPart')
+const startImportPrixPrice = require(pathBase + 'import_prix_source_pricePart')
 
 const fileName = 'PrixCarburants_instantane'
 const zipExtension = '.zip'

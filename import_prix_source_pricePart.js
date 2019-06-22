@@ -1,8 +1,9 @@
+const pathBase = '/home/tgs/import/'
 const mongoose = require('mongoose')
 const fs = require('fs')
-const Price = require('./src/Price')
-const Pdv = require('./src/Pdv')
-const source = 'cron_archives/prix_source.json'
+const Price = require(pathBase + 'src/Price')
+const Pdv = require(pathBase + 'src/Pdv')
+const source = pathBase + 'cron_archives/prix_source.json'
 //const source = 'archives/prix_source20190602.json'
 //const source = 'archives/prix_source20190606.json'
 //const source = 'archives/prix_source20190613.json'
