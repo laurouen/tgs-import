@@ -19,7 +19,7 @@ mongoose.connect('mongodb://localhost/Essence', {
 	useNewUrlParser: true
 })
 
-const startImportPdv = function () {
+/*
 	mongoose.connection
 		.once('open', () => {
 			console.log('----------------------------')
@@ -29,7 +29,8 @@ const startImportPdv = function () {
 			readSource()
 		})
 		.on('error', error => console.log('Erreur de connexion : ', error))
-}
+*/
+
 const readSource = function() {
 	fs.readFile(source, 'utf-8', (err, pdvsFromFile) => {
 		if (err) {
@@ -226,4 +227,4 @@ const stop = function(where = 'not determined') {
 }
 
 
-module.exports = startImportPdv
+module.exports = startImportPrixPdvs
