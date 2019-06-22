@@ -70,7 +70,7 @@ const startImport = function () {
                                         console.log('log Import ok => importPdvSource')
                                         startImportPrixPdvs((resultToLog) => {
 
-
+                                            console.log("resultToLogPDV: ", resultToLog)
 
                                             Logimport.findOne({ dateZipCurled: now }, (err, getLog) => {
                                                 if (err || getLog == null) {
@@ -85,7 +85,7 @@ const startImport = function () {
                                                     .then(() => {
                                                         console.log("start import price...")
                                                         startImportPrixPrice((resultToLog) => {
-                                                            console.log("log import price done !")
+                                                            console.log("resultToLogPRICE: ", resultToLog)
                                                             Logimport.findOne({ dateZipCurled: now }, (err, getLog2) => {
                                                                 if (err || getLog == null) {
                                                                     console.error('Erreur impossible to find log with dateZipCurled 2 : ', now)
