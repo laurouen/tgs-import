@@ -76,20 +76,26 @@ const startImport = function () {
                                                     console.error('Erreur impossible to find log with dateZipCurled : ', now)
                                                     stop('Erreur find log: id = %s', id)
                                                 }
-
+                                                console.log("log import pdv")
                                                 getLog.resultImportPdv = resultToLog
                                                 getLog.dateImportPdvs2Bdd = new Date()
                                                 getLog
                                                     .save()
                                                     .then(() => {
-                                                        console.log("importPrixSource => Fin d'import")
                                                         startImportPrixPrice((resultToLog) => {
-                                                            newLog.resultImportPrix = resultToLog
-                                                            newLog.dateImportPrix2Bdd = new Date()
-                                                            stop('Happy end')
+                                                            console.log("log import prix")
+                                                            getLog.resultImportPrix = resultToLog
+                                                            getLog.dateImportPrix2Bdd = new Date()
+                                                                .save()
+                                                                .then(() => {
+                                                                    console.log("logs pdv & price ok")
+                                                                    stop('Happy end')
+                                                                })
+                                                                .catch(e => console.error('Error save LogImport price : ', e))
+                                                            
                                                         })
                                                     })
-                                                    .catch(e => console.error('Error save LogImport : ', e))
+                                                    .catch(e => console.error('Error save LogImport PDV : ', e))
                                             })
                                         })
                                     })
