@@ -85,14 +85,21 @@ const startImport = function () {
                                                         console.log("start import price...")
                                                         startImportPrixPrice((resultToLog) => {
                                                             console.log("log import price done !")
-                                                            getLog.resultImportPrix = resultToLog
-                                                            getLog.dateImportPrix2Bdd = new Date()
-                                                                .save()
-                                                                .then(() => {
-                                                                    console.log("logs pdv & price ok")
-                                                                    stop('Happy end')
-                                                                })
-                                                                .catch(e => console.error('Error save LogImport price : ', e))
+                                                            Logimport.findOne({ dateZipCurled: now }, (err, getLog2) => {
+                                                                if (err || getLog == null) {
+                                                                    console.error('Erreur impossible to find log with dateZipCurled 2 : ', now)
+                                                                    stop('Erreur find log 2: id = %s', id)
+                                                                }
+                                                                getLog2.resultImportPrix = resultToLog
+                                                                getLog2.dateImportPrix2Bdd = new Date()
+                                                                getLog2
+                                                                    .save()
+                                                                    .then(() => {
+                                                                        console.log("logs pdv & price ok")
+                                                                        stop('Happy end')
+                                                                    })
+                                                                    .catch(e => console.error('Error save LogImport price : ', e))
+                                                            })
                                                             
                                                         })
                                                     })
