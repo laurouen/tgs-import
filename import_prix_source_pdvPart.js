@@ -61,7 +61,7 @@ const readNextPdvs = function() {
 		rapport += ' ; nb loc update only : ' + incUpdateLocOnly
 		callback(rapport)
 	}
-	if (pdvs[index]) {
+	else if (pdvs[index]) {
 		updatePdv(pdvs[index++])
 	} else {
 		index++
@@ -221,7 +221,10 @@ const updatePdv = function(updPdv) {
 			.then(() => {
 				readNextPdvs()
 			})
-			.catch(e => callback('Error when updating Pdv : %s ', id, e))
+			.catch(e => {
+				callback('Error when updating Pdv : %s ', id, e)
+				stop()
+			)
 	})
 }
 

@@ -64,7 +64,7 @@ const readNextPdvs = function() {
 		rapport += ' ; nb prix updaté : ' + incUpdatePrice
 		callback(rapport)
 	}
-	if (pdvs[indexPdv]) {
+	else if (pdvs[indexPdv]) {
 		console.log('next Pdv :', indexPdv)
 		currentPdv = pdvs[indexPdv++]
 		Pdv.findOne({ id: currentPdv.id }, function(err, getPdv) {
@@ -163,7 +163,10 @@ const findPrice = function(price) {
 				getPrice
 					.save()
 					.then(() => readNextPrice())
-					.catch(e => callback('Update failed : ', e))
+					.catch(e => {
+						callback('Update failed : ', e)
+						stop()
+					})
 			} else {
 				readNextPrice()
 			}
@@ -206,7 +209,10 @@ const createPrice = function(id, value, name, datetime) {
 		.then(() => {
 			readNextPrice()
 		})
-		.catch(e => callback('Erreur sur la creation de prix : ', e))
+		.catch(e => {
+			callback('Erreur sur la creation de prix : ', e)
+			stop()
+		})
 }
 
 const stop = function(where = 'not determined') {
