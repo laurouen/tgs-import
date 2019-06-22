@@ -1,4 +1,5 @@
-var exec = require('child_process').exec;
+const exec = require('child_process').exec;
+const unzip = require('unzipper')
 
 const fileName = 'PrixCarburants_instantane'
 const zipExtension = '.zip'
