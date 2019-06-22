@@ -3,7 +3,8 @@ const unzip = require('unzipper')
 const parser = require('xml2json')
 const fs = require('fs')
 const mongoose = require('mongoose')
-const LogImport = require('./src/LogImport')
+const Logimport = require('./src/LogImport')
+const startImportPdv = require('./import_prix_source_pdvPart')
 
 const fileName = 'PrixCarburants_instantane'
 const zipExtension = '.zip'
@@ -43,13 +44,14 @@ var child = exec(
                         var json = parser.toJson(data)
                         fs.writeFile(path + 'prix_source.json', json, err => {
                             console.log('xml2json ok => log import into database')
-                            let newLog = new LogImport({
+                            let newLog = new Logimport({
                                 name: "Prices"
                             })
                             newLog
                                 .save()
                                 .then(() => {
                                     console.log('log Import ok => importPdvSource')
+                                    startImportPdv()
                                 })
                                 .catch(e => console.error('Error save LogImport : ', e))
                         })
@@ -61,3 +63,7 @@ var child = exec(
     }
   );
   
+  const stop = function(where = 'not determined') {
+	console.log('STOP PROGRAMME ! (%s)', where)
+	process.exit(0)
+}

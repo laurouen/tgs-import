@@ -1,7 +1,7 @@
 const mongoose = require('mongoose')
 const fs = require('fs')
 const Pdv = require('./src/Pdv')
-const source = 'archives/prix_source20190602.json'
+const source = 'cron_archives/prix_source.json'
 //const source = 'archives/prix_source20190606.json'
 //const source = 'archives/prix_source20190613.json'
 
@@ -19,16 +19,17 @@ mongoose.connect('mongodb://localhost/Essence', {
 	useNewUrlParser: true
 })
 
-mongoose.connection
-	.once('open', () => {
-		console.log('----------------------------')
-		console.log('!!   Connexion établie    !!')
-		console.log('----------------------------')
+const startImportPdv = function () {
+	mongoose.connection
+		.once('open', () => {
+			console.log('----------------------------')
+			console.log('!!   Connexion établie    !!')
+			console.log('----------------------------')
 
-		readSource()
-	})
-	.on('error', error => console.log('Erreur de connexion : ', error))
-
+			readSource()
+		})
+		.on('error', error => console.log('Erreur de connexion : ', error))
+}
 const readSource = function() {
 	fs.readFile(source, 'utf-8', (err, pdvsFromFile) => {
 		if (err) {
@@ -224,16 +225,5 @@ const stop = function(where = 'not determined') {
 	process.exit(0)
 }
 
-//Promise.all([User.save(), blabla.save()]).then(() => {
 
-//User.findOne({name: 'balbal'}).populate('brand').then ((user) => {})
-
-/*User.findOne({ name: 'balbal' })
-	.populate({
-		path: 'horaires',
-		populate: {
-			path: 'times',
-			model: 'time'
-		}
-	})
-	.then(user => {})*/
+module.exports = startImportPdv
