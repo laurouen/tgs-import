@@ -60,7 +60,6 @@ const readNextPdvs = function() {
 		rapport += ' ; nb de pdv mis à jour : ' + incUpdatePdv
 		rapport += ' ; nb loc update only : ' + incUpdateLocOnly
 		callback(rapport)
-		stop('Fin d import !')
 	}
 	if (pdvs[index]) {
 		updatePdv(pdvs[index++])

@@ -62,7 +62,6 @@ const readNextPdvs = function() {
 		rapport += ' ; nb prix créés : ' + incCreatePrice
 		rapport += ' ; nb prix updaté : ' + incUpdatePrice
 		callback(rapport)
-		stop('Fin d import !')
 	}
 	if (pdvs[indexPdv]) {
 		console.log('next Pdv :', indexPdv)
