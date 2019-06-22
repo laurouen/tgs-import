@@ -45,6 +45,10 @@ const readSource = function() {
 	})
 }
 
+const startImportPrixPdvs = function () {
+	readNextPdvs()
+}
+
 const readNextPdvs = function() {
 	if (index > pdvs.length) {
 		console.log('nb d enregistrements : ', pdvs.length)
