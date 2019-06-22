@@ -23,13 +23,13 @@ var child = exec(
                 d.extract({path: path + fileName + xmlExtension})
                 .then(() => {
                     console.log("unzip ok => xml2json")
-                    fs.readFile(fileName + xmlExtension, 'latin1', (err, data) => {
+                    fs.readFile(path + fileName + xmlExtension, 'latin1', (err, data) => {
                         if (err || data == undefined) {
                             console.log('error reading file :', err)
                         }
                     
                         var json = parser.toJson(data)
-                        fs.writeFile('prix_source.json', json, err => {
+                        fs.writeFile(path + 'prix_source.json', json, err => {
                             console.log('xml2json ok => log import into database')
                         })
                     })
