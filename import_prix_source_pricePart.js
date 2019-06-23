@@ -16,9 +16,9 @@ let indexPrices = 0
 let pdvs = []
 let currentPdv = null
 let prices = []
-let essences = []
 let incCreatePrice = 0
 let incUpdatePrice = 0
+let incRemovePrice = 0
 
 /*
 mongoose.connect('mongodb://localhost/Essence', {
@@ -63,6 +63,7 @@ const readNextPdvs = function() {
 		var rapport = 'nb d enregistrements : ' + pdvs.length
 		rapport += ' ; nb prix créés : ' + incCreatePrice
 		rapport += ' ; nb prix updaté : ' + incUpdatePrice
+		rapport += ' ; nb remove price : ' + incRemovePrice
 		callback(rapport)
 	}
 	else if (pdvs[indexPdv]) {
@@ -132,7 +133,7 @@ const findPrice = function(price) {
 			createPrice(id, valeur, nom, maj)
 		} else {
 			//update price
-			incUpdatePrice++
+			
 			let needToAdd = true
 			for (let index = 0; index < getPrice.prices.length; index++) {
 				const p = getPrice.prices[index]
@@ -142,6 +143,7 @@ const findPrice = function(price) {
 			}
 
 			if (needToAdd) {
+				incUpdatePrice++
 				console.log(
 					'update price => pdv:[%s] id:{%s} nom:%s maj:[%s] prix:%s',
 					currentPdv.id,
@@ -158,6 +160,7 @@ const findPrice = function(price) {
 
 				//check max enreg prices
 				while (getPrice.prices.length > 10) {
+					incRemovePrice++
 					getPrice = removeOldestPrice(getPrice)
 				}
 
