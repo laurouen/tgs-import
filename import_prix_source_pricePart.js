@@ -67,7 +67,7 @@ const readNextPdvs = function() {
 		callback(rapport)
 	}
 	else if (pdvs[indexPdv]) {
-		console.log('next Pdv :', indexPdv)
+		//console.log('next Pdv :', indexPdv)
 		currentPdv = pdvs[indexPdv++]
 		Pdv.findOne({ id: currentPdv.id }, function(err, getPdv) {
 			if (err) {
@@ -112,11 +112,11 @@ const readNextPrice = function() {
 }
 
 const findPrice = function(price) {
-	console.log(
+	/*console.log(
 		'looking for price : price.id:%s and pdv:%s ',
 		price.id,
 		currentPdv.id
-	)
+	)*/
 	let { id, valeur, nom, maj } = price
 	Price.findOne({ pdv: currentPdv.id, id: id }, function(err, getPrice) {
 		if (err) {
