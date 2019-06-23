@@ -252,6 +252,7 @@ const haveEgality = function(oldPdv, newPdv) {
 	isEqual = isEqual && (oldPdv.pop == newPdv.pop)
 	isEqual = isEqual && (oldPdv.automate2424 == newPdv.automate2424)
 	isEqual = isEqual && (oldPdv.active == newPdv.active)
+	return isEqual
 }
 
 const parseCoordinate = function(coordinate) {
