@@ -220,16 +220,7 @@ const updatePdv = function(updPdv) {
 				isEqual = true
 			}
 			else {
-				console.log(
-					'update pdv => [%s] {%s} %s  [%s](%s)',
-					inactive ? '0' : '1',
-					id,
-					adresse,
-					cp,
-					ville
-				)
 
-				incUpdatePdv++
 				if (getPdv.latitude == 0 && newPdv.latitude != 0) {
 					incUpdateLocOnly++
 				}
@@ -257,6 +248,15 @@ const updatePdv = function(updPdv) {
 			readNextPdvs()
 		}
 		else {
+			incUpdatePdv++
+				console.log(
+					'update pdv => [%s] {%s} %s  [%s](%s)',
+					inactive ? '0' : '1',
+					id,
+					adresse,
+					cp,
+					ville
+				)
 			getPdv
 				.save()
 				.then(() => {
