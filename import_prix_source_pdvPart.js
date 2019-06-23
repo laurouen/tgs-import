@@ -183,51 +183,75 @@ const updatePdv = function(updPdv) {
 			stop('Erreur update: id = %s', id)
 		}
 
+		const newPdv = new Pdv({
+			id: id,
+			latitude: parseCoordinate(latitude),
+			longitude: parseCoordinate(longitude),
+			loc: [parseCoordinate(longitude), parseCoordinate(latitude)],
+			adresse: adresse,
+			cp: cp,
+			ville: ville,
+			pop: pop === 'A' ? 'A' : 'R',
+			automate2424: automate2424,
+			active: !inactive,
+			schedule: schedule,
+			services: services
+		})
+		var isEqual = false
 		if (getPdv == null) {
 			incCreatePdv++
 			//create Pdv without brand
-			getPdv = new Pdv({
-				id: id,
-				latitude: parseCoordinate(latitude),
-				longitude: parseCoordinate(longitude),
-				loc: [parseCoordinate(longitude), parseCoordinate(latitude)],
-				adresse: adresse,
-				cp: cp,
-				ville: ville,
-				pop: pop === 'A' ? 'A' : 'R',
-				automate2424: automate2424,
-				active: !inactive,
-				schedule: schedule,
-				services: services
-			})
+			getPdv = newPdv
 		} else {
-			incUpdatePdv++
-			if (getPdv.latitude == 0) {
-				incUpdateLocOnly++
-				getPdv.latitude = parseCoordinate(latitude)
-				getPdv.longitude = parseCoordinate(longitude)
-				getPdv.loc = [parseCoordinate(longitude), parseCoordinate(latitude)]
+			if (haveEgality(getPdv, newPdv)) {
+				isEqual = true
 			}
-			getPdv.adresse = adresse
-			getPdv.cp = cp
-			getPdv.ville = ville
-			getPdv.pop = pop === 'A' ? 'A' : 'R'
-			getPdv.automate2424 = automate2424
-			getPdv.active = !inactive
-			getPdv.schedule = schedule
-			getPdv.services = services
+			else {
+				incUpdatePdv++
+				if (getPdv.latitude == 0) {
+					incUpdateLocOnly++
+					getPdv.latitude = parseCoordinate(latitude)
+					getPdv.longitude = parseCoordinate(longitude)
+					getPdv.loc = [parseCoordinate(longitude), parseCoordinate(latitude)]
+				}
+				getPdv.adresse = adresse
+				getPdv.cp = cp
+				getPdv.ville = ville
+				getPdv.pop = pop === 'A' ? 'A' : 'R'
+				getPdv.automate2424 = automate2424
+				getPdv.active = !inactive
+				getPdv.schedule = schedule
+				getPdv.services = services
+			}
 		}
 
-		getPdv
-			.save()
-			.then(() => {
-				readNextPdvs()
-			})
-			.catch(e => {
-				callback('Error when updating Pdv : %s ', id, e)
-				stop()
-			})
+		if (isEqual) {
+			readNextPdvs()
+		}
+		else {
+			getPdv
+				.save()
+				.then(() => {
+					readNextPdvs()
+				})
+				.catch(e => {
+					callback('Error when updating Pdv : %s ', id, e)
+					stop()
+				})
+		}
 	})
+}
+
+const haveEgality(oldPdv, newPdv) {
+	var isEqual = true
+	isEqual = isEqual && (oldPdv.latitude == newPdv.latitude)
+	isEqual = isEqual && (oldPdv.longitude == newPdv.longitude)
+	isEqual = isEqual && (oldPdv.adresse == newPdv.adresse)
+	isEqual = isEqual && (oldPdv.cp == newPdv.cp)
+	isEqual = isEqual && (oldPdv.ville == newPdv.ville)
+	isEqual = isEqual && (oldPdv.pop == newPdv.pop)
+	isEqual = isEqual && (oldPdv.automate2424 == newPdv.automate2424)
+	isEqual = isEqual && (oldPdv.active == newPdv.active)
 }
 
 const parseCoordinate = function(coordinate) {
