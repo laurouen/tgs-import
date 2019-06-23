@@ -220,7 +220,6 @@ const updatePdv = function(updPdv) {
 				isEqual = true
 			}
 			else {
-
 				console.log(
 					'update pdv => [%s] {%s} %s  [%s](%s)',
 					inactive ? '0' : '1',
@@ -231,12 +230,18 @@ const updatePdv = function(updPdv) {
 				)
 
 				incUpdatePdv++
-				if (getPdv.latitude == 0) {
+				if (getPdv.latitude == 0 && newPdv.latitude != 0) {
 					incUpdateLocOnly++
-					getPdv.latitude = parseCoordinate(latitude)
-					getPdv.longitude = parseCoordinate(longitude)
-					getPdv.loc = [parseCoordinate(longitude), parseCoordinate(latitude)]
 				}
+
+				if (newPdv.latitude != 0) {
+					getPdv.latitude = newPdv.latitude
+					if (newPdv.longitude != 0) {
+						getPdv.longitude = newPdv.longitude
+					}
+					getPdv.loc = [getPdv.longitude, getPdv.latitude]
+				}
+				
 				getPdv.adresse = adresse
 				getPdv.cp = cp
 				getPdv.ville = ville
