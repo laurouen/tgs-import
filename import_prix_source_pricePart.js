@@ -102,7 +102,7 @@ const readNextPrice = function() {
 	if (indexPrices >= prices.length) {
 		readNextPdvs
 	}
-	console.log('next Price :', indexPrices)
+	//console.log('next Price :', indexPrices)
 	const price = prices[indexPrices++]
 	if (price) {
 		findPrice(price)
