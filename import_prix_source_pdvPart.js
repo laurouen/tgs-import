@@ -11,9 +11,22 @@ mongoose.set('useFindAndModify', false)
 
 let index = 0
 let pdvs = []
+
+let incUpLat = 0
+let incUpLong = 0
+let incUpAdr = 0
+let incUpCp = 0
+let incUpVill = 0
+let incUpPop = 0
+let incUpAuto = 0
+let incUpActiv = 0
+
 let incCreatePdv = 0,
 	incUpdatePdv = 0,
 	incUpdateLocOnly = 0
+
+
+	
 
 mongoose.connect('mongodb://localhost/Essence', {
 	useCreateIndex: true,
@@ -61,6 +74,15 @@ const readNextPdvs = function() {
 		rapport += ' ; nb de pdv créé : ' + incCreatePdv
 		rapport += ' ; nb de pdv mis à jour : ' + incUpdatePdv
 		rapport += ' ; nb loc update only : ' + incUpdateLocOnly
+		rapport += ' ; update causes : '
+		rapport += 'lat(' + incUpLat + ')'
+		rapport += 'long(' + incUpLong + ')'
+		rapport += 'adr(' + incUpAdr + ')'
+		rapport += 'cp(' + incUpCp + ')'
+		rapport += 'vil(' + incUpVill + ')'
+		rapport += 'pop(' + incUpPop + ')'
+		rapport += 'auto(' + incUpAuto + ')'
+		rapport += 'activ(' + incUpActiv + ')'
 		callback(rapport)
 	}
 	else if (pdvs[index]) {
@@ -168,15 +190,6 @@ const updatePdv = function(updPdv) {
 		inactive = false
 	}
 
-	console.log(
-		'update pdv => [%s] {%s} %s  [%s](%s)',
-		inactive ? '0' : '1',
-		id,
-		adresse,
-		cp,
-		ville
-	)
-
 	Pdv.findOne({ id: id }, (err, getPdv) => {
 		if (err) {
 			callback('Erreur updating Pdv : ', err)
@@ -207,6 +220,16 @@ const updatePdv = function(updPdv) {
 				isEqual = true
 			}
 			else {
+
+				console.log(
+					'update pdv => [%s] {%s} %s  [%s](%s)',
+					inactive ? '0' : '1',
+					id,
+					adresse,
+					cp,
+					ville
+				)
+
 				incUpdatePdv++
 				if (getPdv.latitude == 0) {
 					incUpdateLocOnly++
@@ -242,16 +265,41 @@ const updatePdv = function(updPdv) {
 	})
 }
 
+
 const haveEgality = function(oldPdv, newPdv) {
 	var isEqual = true
-	isEqual = isEqual && (oldPdv.latitude == newPdv.latitude)
-	isEqual = isEqual && (oldPdv.longitude == newPdv.longitude)
-	isEqual = isEqual && (oldPdv.adresse == newPdv.adresse)
-	isEqual = isEqual && (oldPdv.cp == newPdv.cp)
-	isEqual = isEqual && (oldPdv.ville == newPdv.ville)
-	isEqual = isEqual && (oldPdv.pop == newPdv.pop)
-	isEqual = isEqual && (oldPdv.automate2424 == newPdv.automate2424)
-	isEqual = isEqual && (oldPdv.active == newPdv.active)
+	if (oldPdv.latitude !== newPdv.latitude) {
+		isEqual = false
+		incUpLat++
+	}
+	if (oldPdv.longitude !== newPdv.longitude) {
+		isEqual = false
+		incUpLong++
+	}
+	if (oldPdv.adresse !== newPdv.adresse) {
+		isEqual = false
+		incUpAdr++
+	}
+	if (oldPdv.cp !== newPdv.cp) {
+		isEqual = false
+		incUpCp++
+	}
+	if (oldPdv.ville !== newPdv.ville) {
+		isEqual = false
+		incUpVill++
+	}
+	if (oldPdv.pop !== newPdv.pop) {
+		isEqual = false
+		incUpPop++
+	}
+	if (oldPdv.automate2424 !== newPdv.automate2424) {
+		isEqual = false
+		incUpAuto++
+	}
+	if (oldPdv.active !== newPdv.active) {
+		isEqual = false
+		incUpActiv++
+	}
 	return isEqual
 }
 
