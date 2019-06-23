@@ -242,7 +242,7 @@ const updatePdv = function(updPdv) {
 	})
 }
 
-const haveEgality(oldPdv, newPdv) {
+const haveEgality = function(oldPdv, newPdv) {
 	var isEqual = true
 	isEqual = isEqual && (oldPdv.latitude == newPdv.latitude)
 	isEqual = isEqual && (oldPdv.longitude == newPdv.longitude)
